@@ -1,0 +1,196 @@
+#
+ServerName "ftp server"
+ServerIdent on "FTP Server ready."
+ServerAdmin root@localhost
+DefaultServer on
+Port {{ proftpd_Port }}
+ListOptions "-a"
+UseIPv6 off
+MasqueradeAddress {{ external_ip.json.ip }}
+PassivePorts {{ proftpd_PassivePorts }}
+DefaultRoot ~
+AuthPAMConfig proftpd
+AuthOrder mod_auth_unix.c
+#PersistentPasswd off
+UseReverseDNS off
+
+User nobody
+Group nobody
+
+MaxInstances 20
+UseSendfile off
+
+#LogFormat default "%h %l %u %t \"%r\" %s %b"
+#LogFormat auth "%v [%P] %h %t \"%r\" %s"
+LogFormat allinfo "%t : %u (%a [%h]) : [%s], %T, %m (%f)"
+LogFormat write "%t : %u : %F (%a)"
+LogFormat read "%t : %u : %F (%a)"
+LogFormat auth "%t : %u (%a [%h])"
+ExtendedLog /var/log/proftpd/all.log ALL allinfo
+ExtendedLog /var/log/proftpd/write.log WRITE write
+ExtendedLog /var/log/proftpd/read.log  READ read
+ExtendedLog /var/log/proftpd/auth.log AUTH auth
+
+# General database support (http://www.proftpd.org/docs/contrib/mod_sql.html)
+#   LoadModule mod_sql.c
+#
+# Support for base-64 or hex encoded MD5 and SHA1 passwords from SQL tables
+# (contrib/mod_sql_passwd.html)
+#   LoadModule mod_sql_passwd.c
+#
+# Mysql support (requires proftpd-mysql package)
+# (http://www.proftpd.org/docs/contrib/mod_sql.html)
+#   LoadModule mod_sql_mysql.c
+#
+# Postgresql support (requires proftpd-postgresql package)
+# (http://www.proftpd.org/docs/contrib/mod_sql.html)
+#   LoadModule mod_sql_postgres.c
+#
+# Quota support (http://www.proftpd.org/docs/contrib/mod_quotatab.html)
+#   LoadModule mod_quotatab.c
+#
+# File-specific "driver" for storing quota table information in files
+# (http://www.proftpd.org/docs/contrib/mod_quotatab_file.html)
+#   LoadModule mod_quotatab_file.c
+#
+# SQL database "driver" for storing quota table information in SQL tables
+# (http://www.proftpd.org/docs/contrib/mod_quotatab_sql.html)
+#   LoadModule mod_quotatab_sql.c
+#
+# LDAP support (requires proftpd-ldap package)
+# (http://www.proftpd.org/docs/directives/linked/config_ref_mod_ldap.html)
+#   LoadModule mod_ldap.c
+#
+# LDAP quota support (requires proftpd-ldap package)
+# (http://www.proftpd.org/docs/contrib/mod_quotatab_ldap.html)
+#   LoadModule mod_quotatab_ldap.c
+#
+# Support for authenticating users using the RADIUS protocol
+# (http://www.proftpd.org/docs/contrib/mod_radius.html)
+#   LoadModule mod_radius.c
+#
+# Retrieve quota limit table information from a RADIUS server
+# (http://www.proftpd.org/docs/contrib/mod_quotatab_radius.html)
+#   LoadModule mod_quotatab_radius.c
+#
+# Administrative control actions for the ftpdctl program
+# (http://www.proftpd.org/docs/contrib/mod_ctrls_admin.html)
+#   LoadModule mod_ctrls_admin.c
+#
+# Execute external programs or scripts at various points in the process
+# of handling FTP commands
+# (http://www.castaglia.org/proftpd/modules/mod_exec.html)
+#   LoadModule mod_exec.c
+#
+# Support for POSIX ACLs
+# (http://www.proftpd.org/docs/modules/mod_facl.html)
+#   LoadModule mod_facl.c
+#
+# Support for using the GeoIP library to look up geographical information on
+# the connecting client and using that to set access controls for the server
+# (http://www.castaglia.org/proftpd/modules/mod_geoip.html)
+#   LoadModule mod_geoip.c
+#
+# Configure server availability based on system load
+# (http://www.proftpd.org/docs/contrib/mod_load.html)
+#   LoadModule mod_load.c
+#
+# Limit downloads to a multiple of upload volume (see README.ratio)
+#   LoadModule mod_ratio.c
+#
+# Rewrite FTP commands sent by clients on-the-fly,
+# using regular expression matching and substitution
+# (http://www.proftpd.org/docs/contrib/mod_rewrite.html)
+#   LoadModule mod_rewrite.c
+#
+# Support for the SSH2, SFTP, and SCP protocols, for secure file transfer over
+# an SSH2 connection (http://www.castaglia.org/proftpd/modules/mod_sftp.html)
+#   LoadModule mod_sftp.c
+#
+# Use PAM to provide a 'keyboard-interactive' SSH2 authentication method for
+# mod_sftp (http://www.castaglia.org/proftpd/modules/mod_sftp_pam.html)
+#   LoadModule mod_sftp_pam.c
+#
+# Use SQL (via mod_sql) for looking up authorized SSH2 public keys for user
+# and host based authentication
+# (http://www.castaglia.org/proftpd/modules/mod_sftp_sql.html)
+#   LoadModule mod_sftp_sql.c
+#
+# Provide data transfer rate "shaping" across the entire server
+# (http://www.castaglia.org/proftpd/modules/mod_shaper.html)
+#   LoadModule mod_shaper.c
+#
+# Support for miscellaneous SITE commands such as SITE MKDIR, SITE SYMLINK,
+# and SITE UTIME (http://www.proftpd.org/docs/contrib/mod_site_misc.html)
+#   LoadModule mod_site_misc.c
+#
+# Provide an external SSL session cache using shared memory
+# (contrib/mod_tls_shmcache.html)
+#   LoadModule mod_tls_shmcache.c
+#
+# Use the /etc/hosts.allow and /etc/hosts.deny files, or other allow/deny
+# files, for IP-based access control
+# (http://www.proftpd.org/docs/contrib/mod_wrap.html)
+#   LoadModule mod_wrap.c
+#
+# Use the /etc/hosts.allow and /etc/hosts.deny files, or other allow/deny
+# files, as well as SQL-based access rules, for IP-based access control
+# (http://www.proftpd.org/docs/contrib/mod_wrap2.html)
+#   LoadModule mod_wrap2.c
+#
+# Support module for mod_wrap2 that handles access rules stored in specially
+# formatted files on disk
+# (http://www.proftpd.org/docs/contrib/mod_wrap2_file.html)
+#   LoadModule mod_wrap2_file.c
+#
+# Support module for mod_wrap2 that handles access rules stored in SQL
+# database tables (http://www.proftpd.org/docs/contrib/mod_wrap2_sql.html)
+#   LoadModule mod_wrap2_sql.c
+#
+# Provide a flexible way of specifying that certain configuration directives
+# only apply to certain sessions, based on credentials such as connection
+# class, user, or group membership
+# (http://www.proftpd.org/docs/contrib/mod_ifsession.html)
+LoadModule mod_ifsession.c
+
+# TLS (http://www.castaglia.org/proftpd/modules/mod_tls.html)
+#<IfDefine TLS>
+#  TLSEngine			on
+#  TLSRequired			on
+#  TLSRSACertificateFile		/etc/pki/tls/certs/proftpd.pem
+#  TLSRSACertificateKeyFile	/etc/pki/tls/certs/proftpd.pem
+#  TLSCipherSuite		ALL:!ADH:!DES
+#  TLSOptions			NoCertRequest
+#  TLSVerifyClient		off
+#  #TLSRenegotiate		ctrl 3600 data 512000 required off timeout 300
+#  TLSLog			/var/log/proftpd/tls.log
+#  <IfModule mod_tls_shmcache.c>
+#    TLSSessionCache		shm:/file=/var/run/proftpd/sesscache
+#  </IfModule>
+#</IfDefine>
+
+# Dynamic ban lists (http://www.proftpd.org/docs/contrib/mod_ban.html)
+# Enable this with PROFTPD_OPTIONS=-DDYNAMIC_BAN_LISTS in /etc/sysconfig/proftpd
+<IfDefine DYNAMIC_BAN_LISTS>
+  LoadModule mod_ban.c
+  BanEngine on
+  BanLog /var/log/proftpd/ban.log
+  BanTable /var/run/proftpd/ban.tab
+
+  # If the same client reaches the MaxLoginAttempts limit 2 times
+  # within 10 minutes, automatically add a ban for that client that
+  # will expire after one hour.
+  BanOnEvent			MaxLoginAttempts 2/00:10:00 01:00:00
+
+  # Allow the FTP admin to manually add/remove bans
+  BanControlsACLs		all allow user ftpadm
+</IfDefine>
+
+<Global>
+  Umask 022
+  AllowOverwrite yes
+  TimesGMT off
+  <Limit ALL SITE_CHMOD>
+    AllowAll
+  </Limit>
+</Global>

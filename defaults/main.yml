@@ -1,0 +1,3 @@
+---
+proftpd_Port: 21
+proftpd_PassivePorts: '60000 60100'

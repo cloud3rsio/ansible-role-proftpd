@@ -1,0 +1,31 @@
+---
+- name: Check external ip
+  uri:
+    url: http://ifconfig.io/all.json
+    return_content: yes
+  changed_when: False
+  register: external_ip
+
+- name: install proftpd
+  yum:
+    name: proftpd
+    state: present
+
+- name: Configuration proftpd.conf
+  template:
+    src: proftpd.conf.j2
+    dest: /etc/proftpd.conf
+    owner: root
+    group: root
+    mode: 0640
+  notify: restart_proftpd
+  when:
+    - external_ip.status == 200
+
+- name: start proftpd
+  systemd:
+    name: proftpd.service
+    enabled: yes
+    state: started
+  when:
+    - external_ip.status == 200
