@@ -29,3 +29,8 @@
     state: started
   when:
     - external_ip.status == 200
+
+- name: Add shells
+  lineinfile:
+    path: /etc/shells
+    line: /sbin/nologin
